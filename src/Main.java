@@ -1,8 +1,7 @@
 public class Main {
     // Задание №2 разворот списка
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-//
+
 //        MyList L = new MyList();
 //
 //        int res;
@@ -14,15 +13,12 @@ public class Main {
 //        L.revert();
 //        System.out.println();
 //        L.print();
-        String str = "Строка";
-        Float num = 13.456F;
-        Integer num1 = 54;
-        int a = str.hashCode();
-        Integer b = str.hashCode();
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(num1.hashCode());
+    BinaryTree tree = new BinaryTree();
 
+        for (int i = 1; i < 10; i++) {
+            tree.add(i);
+        }
+    tree.printTree(tree.root);
     }
 
 

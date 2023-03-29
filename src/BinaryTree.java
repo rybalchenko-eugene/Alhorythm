@@ -16,39 +16,38 @@ public class BinaryTree {
             root.value = value;
             root.Color = nodeColor.Black;
         }
-        else add(root, value);
+        else {
+            add(root, value);
+            root = recalc(root);
+            root.Color = nodeColor.Black;
+        }
     }
 
     // Добавление узла
     private void add(Node node, int value){
-//        Node node = new Node();
-//        node.value = value;
-//        node.Color = nodeColor.Red; // добавим цвет
             if (node.value > value){
                 if (node.left != null){
                     add(node.left, value);
                     node.left = recalc(node.left);
-                    return;
                 }
                 else {
                     node.left = new Node();
                     node.left.Color = nodeColor.Red;
                     node.left.value = value;
-                    return;
+
                 }
             } else {
                 if (node.right != null){
                     add(node.right, value);
                     node.right = recalc(node.right);
-                    return;
                 }
                 else {
                     node.right = new Node();
                     node.right.Color = nodeColor.Red;
                     node.right.value = value;
-                    return;
                 }
             }
+            return;
     }
     private enum nodeColor{
         Black,
@@ -93,27 +92,31 @@ public class BinaryTree {
     }
 
     private Node recalc(Node node) {
-        Node result = node;
-        boolean check;
+        Node res = node;
+        boolean need_recalc;
         do {
-            check = false;
-            if ((node.right != null && node.right.Color == nodeColor.Red) &&
-                    (node.left == null || node.left.Color == nodeColor.Black)) {
-                result = rightTurn(result);
-                check = true;
+            need_recalc = false;
+
+            // если справа дочерняя красная, то правый поворот
+            if (res.right != null && res.right.Color == nodeColor.Red &&
+                    (res.left == null || res.left.Color == nodeColor.Black)) {
+                res = rightTurn(res);
+                need_recalc = true;
             }
-            if (node.left != null && node.left.Color == nodeColor.Red &&
-                    node.left.left != null && node.left.left.Color == nodeColor.Red){
-                result = leftTurn(result);
-                check = true;
+            // если левая дочерняя красная и родитель красный, то правый поворот
+            if (res.left != null && res.left.Color == nodeColor.Red &&
+            res.left.left != null && res.left.left.Color == nodeColor.Red) {
+                res = leftTurn(res);
+                need_recalc = true;
             }
-            if (node.left != null && node.left.Color == nodeColor.Red &&
-                    node.right != null && node.right.Color == nodeColor.Red){
-                swipe(result);
-                check = true;
+            // если два дочерних красные, то свайп цвета
+            if (res.left != null && res.right != null &&
+                    res.left.Color == nodeColor.Red && res.right.Color == nodeColor.Red) {
+                swipe(res);
+                need_recalc = true;
             }
-        } while (check);
-        return result;
+        } while (need_recalc);
+        return res;
     }
     private Node leftTurn (Node parent){
         Node left = parent.left;
@@ -137,14 +140,15 @@ public class BinaryTree {
         parent.Color = nodeColor.Red;
         parent.left.Color = nodeColor.Black;
         parent.right.Color = nodeColor.Black;
+
     }
 
-    public void printTree(Node node) {
+    public void printTree(Node node, int level) {
             if (node != null) {
-                System.out.print(" Node {" + node.value + " color:" + node.Color + "}");
-                printTree(node.left);
-                printTree(node.right);
+                System.out.print(" Node {" + node.value + " color:" + node.Color + "}Level =" + level);
+                level++;
+                printTree(node.left, level);
+                printTree(node.right, level);
             } else System.out.println();
-
     }
 }
